@@ -1,12 +1,16 @@
 services:
   server:
-    image: judge0/judge0:latest
+    image: judge0/judge0:1.13.1-extra
     volumes:
       - ./judge0.conf:/judge0.conf:ro
     ports:
       - "2358:2358"
     privileged: true
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 4G
     depends_on:
       db:
         condition: service_healthy
@@ -14,12 +18,16 @@ services:
         condition: service_healthy
 
   worker:
-    image: judge0/judge0:latest
+    image: judge0/judge0:1.13.1-extra
     command: ["./scripts/workers"]
     volumes:
       - ./judge0.conf:/judge0.conf:ro
     privileged: true
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 4G
     depends_on:
       db:
         condition: service_healthy

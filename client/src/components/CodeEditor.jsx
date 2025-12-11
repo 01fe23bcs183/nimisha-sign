@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import axios from 'axios';
+import { mapLanguageToMonaco, getDefaultCode } from '../utils/languageMapper';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -9,19 +10,65 @@ function CodeEditor() {
   const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [languages, setLanguages] = useState([]);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const [monacoLanguage, setMonacoLanguage] = useState('python');
+  const [isLoadingLanguages, setIsLoadingLanguages] = useState(true);
+
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/languages`);
+        const sortedLanguages = response.data.sort((a, b) => 
+          a.name.localeCompare(b.name)
+        );
+        setLanguages(sortedLanguages);
+        
+        const pythonLang = sortedLanguages.find(l => l.name.toLowerCase().includes('python 3'));
+        if (pythonLang) {
+          setSelectedLanguage(pythonLang);
+          setMonacoLanguage(mapLanguageToMonaco(pythonLang.name));
+        } else if (sortedLanguages.length > 0) {
+          setSelectedLanguage(sortedLanguages[0]);
+          setMonacoLanguage(mapLanguageToMonaco(sortedLanguages[0].name));
+        }
+      } catch (err) {
+        console.error('Failed to fetch languages:', err);
+        setLanguages([{ id: 71, name: 'Python (3.8.1)' }]);
+        setSelectedLanguage({ id: 71, name: 'Python (3.8.1)' });
+      } finally {
+        setIsLoadingLanguages(false);
+      }
+    };
+
+    fetchLanguages();
+  }, []);
+
+  const handleLanguageChange = (e) => {
+    const langId = parseInt(e.target.value, 10);
+    const lang = languages.find(l => l.id === langId);
+    if (lang) {
+      setSelectedLanguage(lang);
+      const newMonacoLang = mapLanguageToMonaco(lang.name);
+      setMonacoLanguage(newMonacoLang);
+      setCode(getDefaultCode(newMonacoLang));
+    }
+  };
 
   const handleEditorChange = (value) => {
     setCode(value);
   };
 
   const runCode = async () => {
+    if (!selectedLanguage) return;
+    
     setIsLoading(true);
     setError(null);
     setOutput('');
 
     try {
       const response = await axios.post(`${API_URL}/execute`, {
-        language_id: 71,
+        language_id: selectedLanguage.id,
         source_code: code,
         stdin: ''
       });
@@ -48,10 +95,34 @@ function CodeEditor() {
     <div className="code-editor-container">
       <h1>Online Code Editor</h1>
       
+      <div className="language-selector">
+        <label htmlFor="language-select">Language: </label>
+        <select 
+          id="language-select"
+          value={selectedLanguage?.id || ''}
+          onChange={handleLanguageChange}
+          disabled={isLoadingLanguages}
+          className="language-dropdown"
+        >
+          {isLoadingLanguages ? (
+            <option>Loading languages...</option>
+          ) : (
+            languages.map(lang => (
+              <option key={lang.id} value={lang.id}>
+                {lang.name}
+              </option>
+            ))
+          )}
+        </select>
+        <span className="language-count">
+          {!isLoadingLanguages && `(${languages.length} languages available)`}
+        </span>
+      </div>
+      
       <div className="editor-wrapper">
         <Editor
           height="400px"
-          defaultLanguage="python"
+          language={monacoLanguage}
           value={code}
           onChange={handleEditorChange}
           theme="vs-dark"
@@ -69,7 +140,7 @@ function CodeEditor() {
       <div className="controls">
         <button 
           onClick={runCode} 
-          disabled={isLoading}
+          disabled={isLoading || !selectedLanguage}
           className="run-button"
         >
           {isLoading ? 'Running...' : 'Run Code'}
