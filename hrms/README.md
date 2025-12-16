@@ -1,59 +1,79 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# HRMS - Human Resource Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Human Resource Management System backend built with Laravel 11, providing a complete API for managing employees, attendance, leave, payroll, and more.
 
-## About Laravel
+## Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+HRMS is a full-featured backend API designed to handle all aspects of human resource management for organizations of any size. The system provides RESTful API endpoints for managing staff members, tracking attendance, processing leave requests, handling payroll calculations, and generating reports.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework:** Laravel 11
+- **PHP Version:** 8.2+
+- **Database:** MySQL (production) / SQLite (development/testing)
+- **Authentication:** Laravel Sanctum (API tokens)
+- **Authorization:** Spatie Laravel Permission (role-based access control)
 
-## Learning Laravel
+## Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Authentication & Authorization
+User registration and login with API tokens, role-based access control with four default roles (Administrator, Manager, HR Officer, Staff Member), password reset functionality, and profile management.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Organization Structure
+Office location management supporting multiple branches, division/department management, job title management with hierarchical structure, and file category management for document organization.
 
-## Laravel Sponsors
+### Staff Management
+Comprehensive staff member profiles with 40+ fields covering personal information, employment details, banking information, and emergency contacts. The system also supports staff file uploads, recognition and awards tracking, role upgrades (promotions), location transfers, discipline notes and warnings, and offboarding processes.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Leave Management
+Multiple leave types including Annual, Sick, Casual, Maternity, Paternity, and Bereavement leave. Features include leave application and approval workflow, leave balance tracking, and leave reports.
 
-### Premium Partners
+### Attendance Management
+Daily attendance marking with clock in/out functionality, bulk attendance marking for multiple employees, monthly attendance reports, and tracking for late arrivals and early departures.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Payroll System
+Complete salary component management including allowances, deductions, commissions, and loans. The system handles overtime calculation, company contributions, tax bracket configuration with progressive tax rates, and payslip generation.
 
-## Contributing
+### Communication
+Company announcements targeted to specific employees, events and calendar management, holiday management, and company policies and documents repository.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Reports
+Monthly attendance reports, leave reports by employee and type, payroll reports with department summaries, and dashboard widgets for quick insights.
 
-## Code of Conduct
+## Quick Start
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Clone the repository
+2. Copy `.env.example` to `.env` and configure your database
+3. Run `composer install`
+4. Run `php artisan key:generate`
+5. Run `php artisan migrate --seed`
+6. Run `php artisan serve`
 
-## Security Vulnerabilities
+For detailed setup instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+For API documentation and frontend integration, see [FRONTEND_GUIDE.md](FRONTEND_GUIDE.md).
+
+## Default Users
+
+After seeding, the following users are available:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Administrator | admin@hrms.com | password |
+| Manager | manager@hrms.com | password |
+| HR Officer | hr@hrms.com | password |
+| Staff Member | staff@hrms.com | password |
+
+## API Structure
+
+The API is versioned and all endpoints are prefixed with `/api/v1/`. Authentication is required for most endpoints using Bearer tokens obtained from the login endpoint.
+
+Key endpoint groups include authentication (`/api/v1/auth/*`), office locations, divisions, job titles, staff members, leaves, attendances, payslips, events, documents, and reports.
+
+## Database Schema
+
+The system includes 51 database tables covering all aspects of HR management, from basic organization structure to complex payroll calculations. Key tables include users, staff_members, office_locations, divisions, job_titles, leaves, attendances, pay_slips, and various configuration tables for tax brackets, allowances, and deductions.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is proprietary software.

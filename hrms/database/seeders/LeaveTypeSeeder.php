@@ -16,37 +16,37 @@ class LeaveTypeSeeder extends Seeder
         $leaveTypes = [
             [
                 'name' => 'Annual Leave',
-                'days' => 20,
+                'days_allowed' => 20,
                 'description' => 'Paid annual vacation leave',
             ],
             [
                 'name' => 'Sick Leave',
-                'days' => 12,
+                'days_allowed' => 12,
                 'description' => 'Leave for medical reasons',
             ],
             [
                 'name' => 'Casual Leave',
-                'days' => 10,
+                'days_allowed' => 10,
                 'description' => 'Leave for personal matters',
             ],
             [
                 'name' => 'Maternity Leave',
-                'days' => 90,
+                'days_allowed' => 90,
                 'description' => 'Leave for expecting mothers',
             ],
             [
                 'name' => 'Paternity Leave',
-                'days' => 14,
+                'days_allowed' => 14,
                 'description' => 'Leave for new fathers',
             ],
             [
                 'name' => 'Bereavement Leave',
-                'days' => 5,
+                'days_allowed' => 5,
                 'description' => 'Leave for family bereavement',
             ],
             [
                 'name' => 'Unpaid Leave',
-                'days' => 30,
+                'days_allowed' => 30,
                 'description' => 'Leave without pay',
             ],
         ];
@@ -55,7 +55,7 @@ class LeaveTypeSeeder extends Seeder
             LeaveType::firstOrCreate(
                 ['name' => $leaveType['name']],
                 [
-                    'days' => $leaveType['days'],
+                    'days_allowed' => $leaveType['days_allowed'],
                     'description' => $leaveType['description'],
                     'is_active' => true,
                     'author_id' => $authorId,

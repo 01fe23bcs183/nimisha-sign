@@ -32,7 +32,7 @@ class HolidaySeeder extends Seeder
                 ['name' => $holiday['name'], 'date' => $holiday['date']],
                 [
                     'description' => $holiday['description'],
-                    'is_active' => true,
+                    'is_recurring' => true,
                     'author_id' => $authorId,
                 ]
             );

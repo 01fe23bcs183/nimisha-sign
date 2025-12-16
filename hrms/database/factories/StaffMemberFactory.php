@@ -39,9 +39,9 @@ class StaffMemberFactory extends Factory
             'bank_account_number' => fake()->bankAccountNumber(),
             'bank_name' => fake()->company() . ' Bank',
             'bank_branch' => fake()->city() . ' Branch',
-            'compensation_type' => fake()->randomElement(['monthly', 'hourly', 'contract']),
+            'compensation_type' => fake()->randomElement(['monthly', 'hourly', 'annual']),
             'base_salary' => fake()->randomFloat(2, 30000, 150000),
-            'employment_status' => fake()->randomElement(['active', 'probation', 'inactive', 'terminated']),
+            'employment_status' => fake()->randomElement(['active', 'inactive', 'terminated', 'on_leave']),
             'author_id' => User::factory(),
         ];
     }
@@ -53,10 +53,10 @@ class StaffMemberFactory extends Factory
         ]);
     }
 
-    public function probation(): static
+    public function onLeave(): static
     {
         return $this->state(fn (array $attributes) => [
-            'employment_status' => 'probation',
+            'employment_status' => 'on_leave',
         ]);
     }
 }
