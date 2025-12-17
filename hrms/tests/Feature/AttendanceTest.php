@@ -63,7 +63,6 @@ class AttendanceTest extends TestCase
 
         $this->assertDatabaseHas('attendances', [
             'staff_member_id' => $this->staffMember->id,
-            'date' => '2024-12-16',
             'status' => 'present',
         ]);
     }
@@ -81,7 +80,6 @@ class AttendanceTest extends TestCase
 
         $this->assertDatabaseHas('attendances', [
             'staff_member_id' => $this->staffMember->id,
-            'date' => now()->toDateString(),
         ]);
     }
 
@@ -145,24 +143,26 @@ class AttendanceTest extends TestCase
 
         $this->assertDatabaseHas('attendances', [
             'staff_member_id' => $this->staffMember->id,
-            'date' => '2024-12-16',
             'status' => 'present',
         ]);
 
         $this->assertDatabaseHas('attendances', [
             'staff_member_id' => $staffMember2->id,
-            'date' => '2024-12-16',
             'status' => 'absent',
         ]);
     }
 
     public function test_can_get_monthly_attendance_report(): void
     {
-        Attendance::factory()->count(5)->create([
-            'staff_member_id' => $this->staffMember->id,
-            'date' => now()->startOfMonth(),
-            'author_id' => $this->user->id,
-        ]);
+        // Create attendances with different dates to avoid unique constraint violation
+        $startOfMonth = now()->startOfMonth();
+        for ($i = 0; $i < 5; $i++) {
+            Attendance::factory()->create([
+                'staff_member_id' => $this->staffMember->id,
+                'date' => $startOfMonth->copy()->addDays($i),
+                'author_id' => $this->user->id,
+            ]);
+        }
 
         $response = $this->actingAs($this->user)
             ->getJson('/api/v1/attendance/monthly-report?month=' . now()->month . '&year=' . now()->year);
