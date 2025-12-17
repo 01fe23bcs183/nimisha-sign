@@ -19,7 +19,7 @@ class AttendanceFactory extends Factory
         return [
             'staff_member_id' => StaffMember::factory(),
             'date' => fake()->dateTimeBetween('-30 days', 'now'),
-            'status' => fake()->randomElement(['present', 'absent', 'half_day', 'late']),
+            'status' => fake()->randomElement(['present', 'absent', 'half_day']),
             'clock_in' => $clockIn,
             'clock_out' => $clockOut,
             'late_minutes' => fake()->numberBetween(0, 60),
@@ -53,7 +53,7 @@ class AttendanceFactory extends Factory
     public function late(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'late',
+            'status' => 'present',
             'late_minutes' => fake()->numberBetween(15, 60),
         ]);
     }

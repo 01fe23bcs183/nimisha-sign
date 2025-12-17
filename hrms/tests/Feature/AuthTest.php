@@ -5,11 +5,26 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Clear permission cache and seed required roles
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
+        // Create required roles for testing
+        Role::firstOrCreate(['name' => 'administrator', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'manager', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'hr_officer', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'staff_member', 'guard_name' => 'web']);
+    }
 
     public function test_user_can_register(): void
     {
@@ -64,7 +79,10 @@ class AuthTest extends TestCase
             'password' => 'wrongpassword',
         ]);
 
-        $response->assertStatus(401);
+        $response->assertStatus(422)
+            ->assertJson([
+                'message' => 'The provided credentials are incorrect.',
+            ]);
     }
 
     public function test_user_can_logout(): void
