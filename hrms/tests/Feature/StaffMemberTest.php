@@ -146,7 +146,7 @@ class StaffMemberTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertDatabaseMissing('staff_members', [
+        $this->assertSoftDeleted('staff_members', [
             'id' => $staffMember->id,
         ]);
     }

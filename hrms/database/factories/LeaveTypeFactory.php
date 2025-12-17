@@ -14,7 +14,7 @@ class LeaveTypeFactory extends Factory
     {
         return [
             'name' => fake()->randomElement(['Annual', 'Sick', 'Casual', 'Maternity', 'Paternity']) . ' Leave ' . fake()->unique()->numerify('##'),
-            'days' => fake()->numberBetween(5, 30),
+            'days_allowed' => fake()->numberBetween(5, 30),
             'description' => fake()->sentence(),
             'is_active' => true,
             'author_id' => User::factory(),

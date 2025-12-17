@@ -10,6 +10,8 @@ class Travel extends Model
 {
     use HasFactory;
 
+    protected $table = 'travels';
+
     protected $fillable = [
         'staff_member_id',
         'start_date',

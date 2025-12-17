@@ -11,14 +11,14 @@ class ComplaintController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Complaint::with(['complaintFrom', 'complaintAgainst', 'author']);
+        $query = Complaint::with(['complainant', 'complainedAgainst', 'author']);
 
-        if ($request->has('complaint_from_id')) {
-            $query->where('complaint_from_id', $request->complaint_from_id);
+        if ($request->has('complaint_from')) {
+            $query->where('complaint_from', $request->complaint_from);
         }
 
-        if ($request->has('complaint_against_id')) {
-            $query->where('complaint_against_id', $request->complaint_against_id);
+        if ($request->has('complaint_against')) {
+            $query->where('complaint_against', $request->complaint_against);
         }
 
         if ($request->has('status')) {
@@ -45,28 +45,28 @@ class ComplaintController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'complaint_from_id' => ['required', 'exists:staff_members,id'],
-            'complaint_against_id' => ['nullable', 'exists:staff_members,id'],
+            'complaint_from' => ['required', 'exists:staff_members,id'],
+            'complaint_against' => ['nullable', 'exists:staff_members,id'],
             'title' => ['required', 'string', 'max:255'],
             'complaint_date' => ['required', 'date'],
             'description' => ['nullable', 'string'],
         ]);
 
-        $validated['status'] = 'pending';
+        $validated['status'] = 'open';
         $validated['author_id'] = $request->user()->id;
 
         $complaint = Complaint::create($validated);
 
         return response()->json([
             'message' => 'Complaint created successfully',
-            'data' => $complaint->load(['complaintFrom', 'complaintAgainst']),
+            'data' => $complaint->load(['complainant', 'complainedAgainst']),
         ], 201);
     }
 
     public function show(Complaint $complaint): JsonResponse
     {
         return response()->json([
-            'data' => $complaint->load(['complaintFrom', 'complaintAgainst', 'author']),
+            'data' => $complaint->load(['complainant', 'complainedAgainst', 'author']),
         ]);
     }
 
@@ -83,7 +83,7 @@ class ComplaintController extends Controller
 
         return response()->json([
             'message' => 'Complaint updated successfully',
-            'data' => $complaint->fresh()->load(['complaintFrom', 'complaintAgainst']),
+            'data' => $complaint->fresh()->load(['complainant', 'complainedAgainst']),
         ]);
     }
 
@@ -93,7 +93,7 @@ class ComplaintController extends Controller
 
         return response()->json([
             'message' => 'Complaint resolved',
-            'data' => $complaint->fresh()->load(['complaintFrom', 'complaintAgainst']),
+            'data' => $complaint->fresh()->load(['complainant', 'complainedAgainst']),
         ]);
     }
 

@@ -34,7 +34,7 @@ class LeaveTypeController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'days' => ['required', 'integer', 'min:0'],
+            'days_allowed' => ['required', 'integer', 'min:0'],
             'description' => ['nullable', 'string'],
             'is_active' => ['boolean'],
         ]);
@@ -60,7 +60,7 @@ class LeaveTypeController extends Controller
     {
         $validated = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
-            'days' => ['sometimes', 'integer', 'min:0'],
+            'days_allowed' => ['sometimes', 'integer', 'min:0'],
             'description' => ['nullable', 'string'],
             'is_active' => ['boolean'],
         ]);

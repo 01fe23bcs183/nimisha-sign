@@ -45,7 +45,7 @@ class TravelController extends Controller
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
             'purpose' => ['required', 'string', 'max:255'],
-            'place' => ['required', 'string', 'max:255'],
+            'destination' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
         ]);
 
@@ -73,7 +73,7 @@ class TravelController extends Controller
             'start_date' => ['sometimes', 'date'],
             'end_date' => ['sometimes', 'date'],
             'purpose' => ['sometimes', 'string', 'max:255'],
-            'place' => ['sometimes', 'string', 'max:255'],
+            'destination' => ['sometimes', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
         ]);
 

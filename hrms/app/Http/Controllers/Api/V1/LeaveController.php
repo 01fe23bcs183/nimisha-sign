@@ -13,7 +13,7 @@ class LeaveController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Leave::with(['staffMember', 'leaveType', 'approvedByUser', 'author']);
+        $query = Leave::with(['staffMember', 'leaveType', 'approvedBy', 'author']);
 
         if ($request->has('staff_member_id')) {
             $query->where('staff_member_id', $request->staff_member_id);
@@ -78,7 +78,7 @@ class LeaveController extends Controller
     public function show(Leave $leave): JsonResponse
     {
         return response()->json([
-            'data' => $leave->load(['staffMember', 'leaveType', 'approvedByUser', 'author']),
+            'data' => $leave->load(['staffMember', 'leaveType', 'approvedBy', 'author']),
         ]);
     }
 
@@ -120,7 +120,7 @@ class LeaveController extends Controller
 
         return response()->json([
             'message' => 'Leave approved successfully',
-            'data' => $leave->fresh()->load(['staffMember', 'leaveType', 'approvedByUser']),
+            'data' => $leave->fresh()->load(['staffMember', 'leaveType', 'approvedBy']),
         ]);
     }
 
@@ -174,9 +174,9 @@ class LeaveController extends Controller
 
             $balance[] = [
                 'leave_type' => $leaveType,
-                'total_days' => $leaveType->days,
+                'total_days' => $leaveType->days_allowed,
                 'taken_days' => $taken,
-                'remaining_days' => max(0, $leaveType->days - $taken),
+                'remaining_days' => max(0, $leaveType->days_allowed - $taken),
             ];
         }
 

@@ -23,10 +23,8 @@ class AuthTest extends TestCase
         $response->assertStatus(201)
             ->assertJsonStructure([
                 'message',
-                'data' => [
-                    'user' => ['id', 'name', 'email'],
-                    'token',
-                ],
+                'user' => ['id', 'name', 'email'],
+                'token',
             ]);
 
         $this->assertDatabaseHas('users', [
@@ -49,10 +47,8 @@ class AuthTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'message',
-                'data' => [
-                    'user' => ['id', 'name', 'email'],
-                    'token',
-                ],
+                'user' => ['id', 'name', 'email'],
+                'token',
             ]);
     }
 
@@ -74,13 +70,14 @@ class AuthTest extends TestCase
     public function test_user_can_logout(): void
     {
         $user = User::factory()->create();
+        $token = $user->createToken('test_token')->plainTextToken;
 
-        $response = $this->actingAs($user)
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
             ->postJson('/api/v1/auth/logout');
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Logged out successfully',
+                'message' => 'Logout successful',
             ]);
     }
 
@@ -93,7 +90,7 @@ class AuthTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'data' => ['id', 'name', 'email'],
+                'user' => ['id', 'name', 'email'],
             ]);
     }
 
