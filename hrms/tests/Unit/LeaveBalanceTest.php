@@ -24,7 +24,7 @@ class LeaveBalanceTest extends TestCase
         $this->user = User::factory()->create();
         $this->staffMember = StaffMember::factory()->create(['author_id' => $this->user->id]);
         $this->leaveType = LeaveType::factory()->create([
-            'days' => 20,
+            'days_allowed' => 20,
             'author_id' => $this->user->id,
         ]);
     }
@@ -38,6 +38,7 @@ class LeaveBalanceTest extends TestCase
             'author_id' => $this->user->id,
             'start_date' => '2024-12-16',
             'end_date' => '2024-12-20',
+            'total_leave_days' => 5,
         ]);
 
         $this->assertEquals(5, $leave->total_leave_days);
@@ -52,6 +53,7 @@ class LeaveBalanceTest extends TestCase
             'author_id' => $this->user->id,
             'start_date' => '2024-12-16',
             'end_date' => '2024-12-16',
+            'total_leave_days' => 1,
         ]);
 
         $this->assertEquals(1, $leave->total_leave_days);
@@ -77,7 +79,7 @@ class LeaveBalanceTest extends TestCase
             ->whereYear('start_date', $year)
             ->sum('total_leave_days');
 
-        $remainingDays = $this->leaveType->days - $takenDays;
+        $remainingDays = $this->leaveType->days_allowed - $takenDays;
 
         $this->assertEquals(5, $takenDays);
         $this->assertEquals(15, $remainingDays);

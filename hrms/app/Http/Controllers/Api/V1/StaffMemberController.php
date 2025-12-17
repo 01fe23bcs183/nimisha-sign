@@ -54,6 +54,7 @@ class StaffMemberController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'user_id' => ['nullable', 'exists:users,id', 'unique:staff_members,user_id'],
             'full_name' => ['required', 'string', 'max:255'],
             'personal_email' => ['required', 'email', 'max:255'],
             'mobile_number' => ['nullable', 'string', 'max:50'],
@@ -76,9 +77,9 @@ class StaffMemberController extends Controller
             'bank_account_number' => ['nullable', 'string', 'max:50'],
             'bank_name' => ['nullable', 'string', 'max:255'],
             'bank_branch' => ['nullable', 'string', 'max:255'],
-            'compensation_type' => ['nullable', 'in:monthly,hourly,daily'],
+            'compensation_type' => ['nullable', 'in:monthly,hourly,annual'],
             'base_salary' => ['nullable', 'numeric', 'min:0'],
-            'employment_status' => ['nullable', 'in:active,inactive,probation,terminated'],
+            'employment_status' => ['nullable', 'in:active,inactive,on_leave,terminated'],
             'emergency_contact_name' => ['nullable', 'string', 'max:255'],
             'emergency_contact_phone' => ['nullable', 'string', 'max:50'],
             'emergency_contact_relation' => ['nullable', 'string', 'max:100'],
@@ -93,7 +94,7 @@ class StaffMemberController extends Controller
         ]);
 
         return DB::transaction(function () use ($validated, $request) {
-            $user = null;
+            $userId = $validated['user_id'] ?? null;
 
             if ($request->boolean('create_user_account')) {
                 $user = User::create([
@@ -104,6 +105,13 @@ class StaffMemberController extends Controller
                 ]);
 
                 $user->assignRole($validated['role'] ?? 'staff_member');
+                $userId = $user->id;
+            }
+
+            if (!$userId) {
+                return response()->json([
+                    'message' => 'Either user_id or create_user_account with password is required',
+                ], 422);
             }
 
             $profilePhotoPath = null;
@@ -113,7 +121,7 @@ class StaffMemberController extends Controller
 
             $staffMember = StaffMember::create([
                 ...$validated,
-                'user_id' => $user?->id,
+                'user_id' => $userId,
                 'profile_photo' => $profilePhotoPath,
                 'author_id' => $request->user()->id,
             ]);

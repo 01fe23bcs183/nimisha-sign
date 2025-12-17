@@ -14,9 +14,10 @@ class LeaveFactory extends Factory
 
     public function definition(): array
     {
-        $startDate = fake()->dateTimeBetween('now', '+30 days');
-        $endDate = fake()->dateTimeBetween($startDate, '+7 days');
-        $totalDays = $startDate->diff($endDate)->days + 1;
+        $startDate = fake()->dateTimeBetween('now', '+14 days');
+        $daysToAdd = fake()->numberBetween(1, 7);
+        $endDate = (clone $startDate)->modify("+{$daysToAdd} days");
+        $totalDays = $daysToAdd + 1;
 
         return [
             'staff_member_id' => StaffMember::factory(),
